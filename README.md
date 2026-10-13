@@ -30,27 +30,46 @@ When choosing papers, students should consider both their current background and
 
 Each student gives one presentation during the semester. All students must read the assigned papers before each session.
 
-Further information about the format will be added later.
-
 ---
 
 ## Evaluation
 
-The seminar is available as a 4 CP or 7 CP course.
+***Important: Study programs may differ in which version of the seminar students can take. Please check with your study program coordinator if in doubt.***
 
-| Assessment | 4 CP | 7 CP |
-|---|---:|---:|
-| Presentation | 60% | 30% |
-| Questions about the readings | 40% | 20% |
-| Final paper | — | 50% |
+For students taking the seminar for 4 CP:
+
+```text
+Presentation: 70%
+Participation in class: 30%
+```
+
+For students taking the seminar for 7 CP:
+
+```text
+Presentation: 45%
+Participation in class: 15%
+Final paper: 40%
+```
 
 The final paper for the 7 CP version reports on a small independent project related to the seminar. Further details will be discussed in class.
 
-Study programs may differ in which version of the seminar students can take. As a general rule, Computer Science students take the 7 CP version, while LST students may take either version. Students who are unsure should check with their study program coordinator.
+***Important: You must be registered on LSF for the correct version of the seminar in order to receive credit.***
+
+### Presentations
+
+Depending on the difficulty of the reading, we might spend two weeks discussing a single paper or discuss two papers in one week. Students must prepare slides for their presentation. AI-generated slides are not accepted. The following structure is recommended:
+
+1. **Short overview:** Start with a **15-minute presentation** covering the high-level details and overall idea of the paper, followed by about **15 minutes for discussion**. You are encouraged to combine the discussion with your presentation, but are not required to do so. Focus on the big-picture findings and conclusions rather than including every result. Instead of showing a full table of numbers, highlight the key results. When the paper reports several similar results, synthesize them. If it contains many studies, select a representative subset that supports the paper's conclusions. If the paper primarily discusses or reviews other work, draw on the cited material to provide richer context and useful details.
+2. **Discuss a specific claim in detail:** Identify the paper's central claim and spend about **30 minutes** examining it in depth. Focus on explaining the method clearly, including its key components, assumptions, and experimental setup where relevant. Introduce any background concepts needed to understand the method and the claim it supports.
+3. **Your own opinion:** End by critically engaging with the reading. Discuss your view of the key findings, motivation, and arguments, including where you agree or disagree with the authors. Aim for about **10 minutes**, leaving the remaining time for discussion.
+
+You will have enough time, so avoid speaking too quickly. Make sure the audience can follow by giving examples, revisiting difficult points, and checking for understanding. The purpose of a presentation is to convey information clearly.
+
+Generating and moderating class discussion is a key part of the presentation. Think about what will interest your audience, engage them actively, and create ample opportunities for discussion throughout your presentation. When attending other students' talks, participate actively in return.
 
 ### AI policy
 
-⚠️ AI-generated presentation slides are not permitted.
+⚠️ Students must create their own presentation slides. AI-generated slides are not accepted.
 
 Further information about the use of AI tools in this seminar will be added later.
 
@@ -71,8 +90,8 @@ Topics, papers, and presenters will be assigned later.
 
 | # | Date | Topic | Papers | Presenters |
 |---:|---|---|---|---|
-| 1 | 14 Oct 2026 | _TBA_ | _TBA_ | _TBA_ |
-| 2 | 21 Oct 2026 | _TBA_ | _TBA_ | _TBA_ |
+| 1 | 14 Oct 2026 | Kick-off meeting: introduction and course logistics | — | — |
+| 2 | 21 Oct 2026 | No class | — | — |
 | 3 | 28 Oct 2026 | _TBA_ | _TBA_ | _TBA_ |
 | 4 | 04 Nov 2026 | _TBA_ | _TBA_ | _TBA_ |
 | 5 | 11 Nov 2026 | _TBA_ | _TBA_ | _TBA_ |
@@ -106,8 +125,11 @@ The readings below form a pool of presentation choices.
 - **Pari et al., [Dynamic Compression in Recurrent Networks](https://arxiv.org/abs/2608.17896)** — *arXiv preprint*
 - **Patil et al., [Loss Smoothing for Stable Adaptation Under Distribution Shift](https://arxiv.org/abs/2607.00634)** — *arXiv preprint*
 - **Shenfeld et al., [Self-Distillation Enables Continual Learning](https://arxiv.org/abs/2601.19897)** — *arXiv preprint*
+- **Singh et al., [Agent Plasticity: Measuring Self-Improvement Through Experience](https://arxiv.org/abs/2610.08902)** — *arXiv preprint*
 - **Sundaram et al., [Teaching Models to Teach Themselves: Reasoning at the Edge of Learnability](https://arxiv.org/abs/2601.18778)** — *ICML 2026*
 - **Tiwari et al., [Learning, Fast and Slow: Towards LLMs That Adapt Continually](https://arxiv.org/abs/2605.12484)** — *arXiv preprint*
+- **Wang et al., [Evaluating Persistent Calibration under Evolving Model Knowledge](https://arxiv.org/abs/2609.38797)** — *arXiv preprint*
+- **Wu et al., [Off-Policy Merging Beats On-Policy Self-Distillation for Continual Learning](https://arxiv.org/abs/2610.05872)** — *arXiv preprint*
 - **Zhang et al., [Continual Learning Mechanisms Compose for Long-Horizon Memorization](https://arxiv.org/abs/2609.06986)** — *arXiv preprint*
 - **Zhang et al., [SkillFlow: Benchmarking Lifelong Skill Discovery and Evolution for Autonomous Agents](https://arxiv.org/abs/2604.17308)** — *arXiv preprint*
 - **Zweiger et al., [Fast KV Compaction via Attention Matching](https://arxiv.org/abs/2602.16284)** — *arXiv preprint*
