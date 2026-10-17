@@ -90,7 +90,7 @@ Topics, papers, and presenters will be assigned later.
 
 | # | Date | Topic | Papers | Presenters |
 |---:|---|---|---|---|
-| 1 | 14 Oct 2026 | Kick-off meeting: introduction and course logistics | — | — |
+| 1 | 14 Oct 2026 | Kick-off meeting: introduction and course logistics ([slides](slides/kick-off.pdf)) | — | — |
 | 2 | 21 Oct 2026 | No class | — | — |
 | 3 | 28 Oct 2026 | _TBA_ | _TBA_ | _TBA_ |
 | 4 | 04 Nov 2026 | _TBA_ | _TBA_ | _TBA_ |
