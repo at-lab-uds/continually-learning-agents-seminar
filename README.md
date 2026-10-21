@@ -98,8 +98,8 @@ Initial assignments are listed below and remain preliminary. In sessions with tw
 | 4 | 04 Nov 2026 | Retention and adaptation | [To Retain or to Adapt? Generalizing Continual Learning](https://arxiv.org/abs/2607.05609) | Jaleel Ahmed Radhu Khwaja |
 | 5 | 11 Nov 2026 | Maintaining plasticity | [Loss of plasticity in deep continual learning](https://doi.org/10.1038/s41586-024-07711-7) | Nazanin Zarei Rad |
 | 6 | 18 Nov 2026 | Learning representations for adaptation | [Meta-Learning Representations for Continual Learning](https://arxiv.org/abs/1905.12588) | Liliia Maiorova |
-| 7 | 25 Nov 2026 | Continual adaptation in LLMs | [Learning, Fast and Slow: Towards LLMs That Adapt Continually](https://arxiv.org/abs/2605.12484) | Zhanyu Chen |
-| 8 | 02 Dec 2026 | Learning from self-generated supervision | [Self-Distillation Enables Continual Learning](https://arxiv.org/abs/2601.19897)<br>[Teaching Models to Teach Themselves: Reasoning at the Edge of Learnability](https://arxiv.org/abs/2601.18778) | Paulina Emily Hussein<br>Shadmehr Salehi |
+| 7 | 25 Nov 2026 | Continual adaptation in LLMs | [Learning, Fast and Slow: Towards LLMs That Adapt Continually](https://arxiv.org/abs/2605.12484)<br>[Self-Distillation Enables Continual Learning](https://arxiv.org/abs/2601.19897) | Zhanyu Chen<br>Paulina Emily Hussein |
+| 8 | 02 Dec 2026 | Learning from self-generated supervision | [Teaching Models to Teach Themselves: Reasoning at the Edge of Learnability](https://arxiv.org/abs/2601.18778) | Shadmehr Salehi |
 | 9 | 09 Dec 2026 | Modular memory for continual learning agents | [Position: Modular Memory is the Key to Continual Learning Agents](https://arxiv.org/abs/2603.01761) | Nathanael Möcking |
 | 10 | 16 Dec 2026 | Efficient context memory | [Fast KV Compaction via Attention Matching](https://arxiv.org/abs/2602.16284) | Haejin Cho |
 | 11 | 06 Jan 2027 | Evolving agent contexts | [Agentic Context Engineering: Evolving Contexts for Self-Improving Language Models](https://arxiv.org/abs/2510.04618) | Fabian Waller |
