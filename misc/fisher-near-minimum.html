@@ -1,0 +1,386 @@
+<title>The Fisher Near a Minimum</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one card. Rotatable 3D plot of task A's loss around its minimum with the Fisher quadratic on top, two sliders to move to a new point, then a side-by-side readout of actual versus Fisher loss.
+   Blue surface = true loss. Orange mesh = Fisher approximation. White page for projecting. */
+:root {
+  --page: #ffffff;
+  --surface: #ffffff;
+  --ink: #0b0b0b;
+  --ink2: #52514e;
+  --muted: #898781;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --band: #f3f2ee;
+  --border: rgba(11, 11, 11, 0.10);
+  --blue: #2a78d6;
+  --orange: #eb6834;
+  color-scheme: light;
+  --font: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+body {
+  background: var(--page);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.5;
+  padding-block: 28px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 880px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+h1 { font-size: 26px; line-height: 1.15; margin: 0; font-weight: 700; letter-spacing: -0.01em; text-wrap: balance; }
+h2 { font-size: 17px; margin: 0; font-weight: 650; text-wrap: balance; }
+p { margin: 0; }
+.eyebrow { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.lede { color: var(--ink2); max-width: 66ch; }
+.sub { color: var(--ink2); font-size: 13px; max-width: 66ch; margin-top: 2px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--ink2); }
+.legend > span { display: inline-flex; align-items: center; gap: 7px; }
+.sw { display: inline-block; flex: none; }
+.sw.b { width: 16px; height: 10px; border-radius: 2px; background: var(--blue); }
+.sw.o { width: 16px; height: 0; border-top: 2px solid var(--orange); }
+.dotm { width: 10px; height: 10px; border-radius: 50%; display: inline-block; background: var(--ink); flex: none; }
+.dotm.o { background: none; border: 3px solid var(--orange); box-sizing: border-box; }
+
+.stage { position: relative; min-width: 0; }
+canvas { display: block; width: 100%; background: #fff; border: 1px solid var(--grid); border-radius: 8px; cursor: grab; touch-action: none; }
+canvas:active { cursor: grabbing; }
+canvas:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.drag { position: absolute; left: 10px; bottom: 8px; font-size: 12px; color: var(--muted); pointer-events: none; }
+
+.ctl { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px 24px; }
+.sl { display: flex; flex-direction: column; gap: 2px; min-width: 0; font-size: 13.5px; color: var(--ink2); }
+.sl .row { display: flex; justify-content: space-between; gap: 8px; }
+.sl output { font-weight: 650; color: var(--ink); font-variant-numeric: tabular-nums; }
+input[type=range] { width: 100%; accent-color: var(--ink); }
+input:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.btns { display: flex; gap: 8px; align-items: center; }
+button {
+  font: inherit; font-size: 13px; font-weight: 600; color: var(--ink); background: transparent;
+  border: 1px solid var(--axis); border-radius: 6px; padding: 5px 12px; cursor: pointer;
+}
+button:hover { background: var(--band); }
+button:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+.cmp { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.tile { border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.tile .k { display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 650; }
+.tile .v { font-size: 30px; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.tile .n { font-size: 12.5px; color: var(--ink2); }
+.tile .bar { height: 8px; border-radius: 2px; min-width: 2px; margin-top: 4px; }
+.tile.a .bar { background: var(--blue); }
+.tile.f .bar { background: var(--orange); }
+@media (max-width: 520px) { .cmp { grid-template-columns: 1fr; } }
+.fvals { font-size: 13px; color: var(--ink2); }
+.foot { font-size: 12.5px; color: var(--muted); max-width: 80ch; }
+</style>
+
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:10px">
+    <div class="eyebrow">Kirkpatrick et al., 2016 · The Fisher information</div>
+    <h1>The Fisher near a minimum</h1>
+    <p class="lede">Task A's loss as a function of two weights, around its minimum θ*<sub>A</sub>. The Fisher gives a quadratic approximation of this surface. Move to a new point and compare the actual loss with the loss according to the Fisher.</p>
+  </header>
+
+  <section class="card" aria-labelledby="t1">
+    <div>
+      <h2 id="t1">Task A's loss surface and its Fisher approximation</h2>
+      <p class="sub">Drag the plot to rotate it. Both axes show the change in a weight from its value at the minimum.</p>
+    </div>
+
+    <div class="legend">
+      <span><i class="sw b"></i><span>Actual loss</span></span>
+      <span><i class="sw o"></i><span>Fisher approximation (orange mesh)</span></span>
+      <span><i class="dotm"></i><span>New point, actual loss</span></span>
+      <span><i class="dotm o"></i><span>New point, Fisher</span></span>
+    </div>
+
+    <div class="stage">
+      <canvas id="cv" tabindex="0" role="img" aria-label="Rotatable 3D plot of task A's loss around its minimum for two weights, with the Fisher quadratic approximation overlaid. Arrow keys rotate it."></canvas>
+      <div class="drag">drag or use arrow keys to rotate</div>
+    </div>
+
+    <div class="ctl">
+      <div class="sl">
+        <div class="row"><label for="d1">Move weight 1 by δ₁</label><output id="d1o" for="d1">0.40</output></div>
+        <input type="range" id="d1" min="-1.5" max="1.5" step="0.05" value="0.4">
+      </div>
+      <div class="sl">
+        <div class="row"><label for="d2">Move weight 2 by δ₂</label><output id="d2o" for="d2">0.40</output></div>
+        <input type="range" id="d2" min="-1.5" max="1.5" step="0.05" value="0.4">
+      </div>
+    </div>
+    <div class="btns"><button type="button" id="rv">Reset view</button></div>
+
+    <div class="cmp" aria-live="polite">
+      <div class="tile a">
+        <span class="k"><i class="dotm"></i>Actual loss</span>
+        <span class="v" id="tv">–</span>
+        <span class="n">L<sub>A</sub>(θ) − L<sub>A</sub>(θ*<sub>A</sub>)</span>
+        <div class="bar" id="ba"></div>
+      </div>
+      <div class="tile f">
+        <span class="k"><i class="dotm o"></i>Loss according to the Fisher</span>
+        <span class="v" id="ev">–</span>
+        <span class="n">½ Σ F<sub>i</sub> δ<sub>i</sub>² = ½ (F<sub>1</sub> δ₁² + F<sub>2</sub> δ₂²)</span>
+        <div class="bar" id="bf"></div>
+      </div>
+    </div>
+    <p class="fvals" id="fvals"></p>
+  </section>
+
+  <p class="foot">Toy model: logistic regression with two weights and no bias, fitted to 300 simulated examples. F<sub>i</sub> is the average squared gradient of the log-likelihood with respect to weight i, with labels drawn from the model's own predictions, evaluated at the minimum. Heights are capped at the top of the plot.</p>
+</div>
+
+<script>
+(function () {
+  var N = 300, S1 = 1.5, S2 = 0.4, R = 1.5, G = 36;
+
+  function rng(seed) {
+    var a = seed >>> 0;
+    return function () {
+      a = (a + 0x6D2B79F5) >>> 0;
+      var t = a;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  var r = rng(3);
+  function randn() { var u = 1 - r(), v = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+  function sig(z) { return 1 / (1 + Math.exp(-z)); }
+  function softplus(z) { return z > 0 ? z + Math.log1p(Math.exp(-z)) : Math.log1p(Math.exp(z)); }
+
+  var z1 = [], z2 = [], y = [], n;
+  for (n = 0; n < N; n++) { z1.push(randn()); z2.push(randn()); }
+  (function () {
+    function mean(a) { return a.reduce(function (s, v) { return s + v; }, 0) / a.length; }
+    function sd(a) { return Math.sqrt(a.reduce(function (s, v) { return s + v * v; }, 0) / a.length); }
+    var m1 = mean(z1), m2 = mean(z2), dot = 0, nn = 0, k, q1, q2;
+    for (k = 0; k < N; k++) { z1[k] -= m1; z2[k] -= m2; }
+    for (k = 0; k < N; k++) { dot += z1[k] * z2[k]; nn += z1[k] * z1[k]; }
+    for (k = 0; k < N; k++) z2[k] -= dot / nn * z1[k];
+    q1 = sd(z1); q2 = sd(z2);
+    for (k = 0; k < N; k++) { z1[k] /= q1; z2[k] /= q2; }
+    var rl = rng(11);
+    for (k = 0; k < N; k++) y.push(rl() < sig(1.2 * z1[k]) ? 1 : 0);
+  })();
+
+  var M = null;
+  var P = { d1: 0.4, d2: 0.4 };
+  var DEF = { yaw: 0.55, pitch: 0.6 };
+  var view = { yaw: DEF.yaw, pitch: DEF.pitch };
+
+  function fit() {
+    var x1 = [], x2 = [], i;
+    for (i = 0; i < N; i++) { x1.push(S1 * z1[i]); x2.push(S2 * z2[i]); }
+    var w = [0, 0], it, H00, H01, H11, g0, g1, p, e, h, det, d0, d1;
+    for (it = 0; it < 40; it++) {
+      g0 = g1 = H00 = H01 = H11 = 0;
+      for (i = 0; i < N; i++) {
+        p = sig(w[0] * x1[i] + w[1] * x2[i]); e = p - y[i]; h = p * (1 - p);
+        g0 += e * x1[i]; g1 += e * x2[i];
+        H00 += h * x1[i] * x1[i]; H01 += h * x1[i] * x2[i]; H11 += h * x2[i] * x2[i];
+      }
+      g0 /= N; g1 /= N; H00 /= N; H01 /= N; H11 /= N;
+      det = H00 * H11 - H01 * H01;
+      d0 = (H11 * g0 - H01 * g1) / det; d1 = (-H01 * g0 + H00 * g1) / det;
+      w[0] -= d0; w[1] -= d1;
+      if (Math.abs(d0) + Math.abs(d1) < 1e-10) break;
+    }
+    // Diagonal Fisher at the minimum: labels come from the model, so E[(y - p)^2] = p (1 - p)
+    var F1 = 0, F2 = 0;
+    for (i = 0; i < N; i++) {
+      p = sig(w[0] * x1[i] + w[1] * x2[i]); h = p * (1 - p);
+      F1 += h * x1[i] * x1[i]; F2 += h * x2[i] * x2[i];
+    }
+    F1 /= N; F2 /= N;
+    function loss(a, b) {
+      var s = 0, k, z;
+      for (k = 0; k < N; k++) { z = (w[0] + a) * x1[k] + (w[1] + b) * x2[k]; s += softplus(z) - y[k] * z; }
+      return s / N;
+    }
+    var L0 = loss(0, 0), Ht = [], Hq = [], a, b, row, rq, hmax = 0;
+    for (a = 0; a <= G; a++) {
+      row = []; rq = [];
+      for (b = 0; b <= G; b++) {
+        var da = -R + 2 * R * a / G, db = -R + 2 * R * b / G;
+        var t = Math.max(0, loss(da, db) - L0);
+        row.push(t); rq.push(0.5 * (F1 * da * da + F2 * db * db));
+        if (t > hmax) hmax = t;
+      }
+      Ht.push(row); Hq.push(rq);
+    }
+    return { loss: loss, F1: F1, F2: F2, L0: L0, Ht: Ht, Hq: Hq, hmax: hmax };
+  }
+
+  // ---------- 3D projection and drawing ----------
+  var cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+  var size = { w: 600, h: 420, dpr: 1 };
+  function proj(X, Y, Z) {
+    var cy = Math.cos(view.yaw), sy = Math.sin(view.yaw), cp = Math.cos(view.pitch), sp = Math.sin(view.pitch);
+    var x1 = X * cy - Y * sy, y1 = X * sy + Y * cy, z1 = Z - 0.5;
+    var sxv = x1, syv = y1 * sp + z1 * cp, dep = y1 * cp - z1 * sp;
+    var D = 5.5, base = Math.min(size.w * 0.24, size.h * 0.34), sc = D / (D + dep) * base;
+    return [size.w / 2 + sxv * sc, size.h * 0.52 - syv * sc, dep];
+  }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  var C0 = [205, 226, 251], C1 = [16, 66, 129];
+  var LIGHT = (function () { var v = [-0.35, -0.5, 0.8], l = Math.hypot(v[0], v[1], v[2]); return [v[0] / l, v[1] / l, v[2] / l]; })();
+
+  function draw() {
+    if (!M) return;
+    var W = size.w, Hh = size.h, font = getComputedStyle(document.body).fontFamily;
+    ctx.setTransform(size.dpr, 0, 0, size.dpr, 0, 0);
+    ctx.clearRect(0, 0, W, Hh);
+    ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, Hh);
+    ctx.lineJoin = 'round';
+    var zs = 0.8 / M.hmax, cap = 1.2 * M.hmax, i, j;
+
+    function poly(pts, fill, stroke, lw) {
+      ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
+      for (var k = 1; k < pts.length; k++) ctx.lineTo(pts[k][0], pts[k][1]);
+      ctx.closePath();
+      if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+      if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = lw || 1; ctx.stroke(); }
+    }
+    // floor
+    poly([proj(-1, -1, 0), proj(1, -1, 0), proj(1, 1, 0), proj(-1, 1, 0)], '#f3f2ee', '#c3c2b7', 1);
+    var g;
+    ctx.strokeStyle = '#e1e0d9'; ctx.lineWidth = 1;
+    for (g = -0.5; g <= 0.5; g += 0.5) {
+      if (g === 0) continue;
+      var a1 = proj(g, -1, 0), a2 = proj(g, 1, 0), b1 = proj(-1, g, 0), b2 = proj(1, g, 0);
+      ctx.beginPath(); ctx.moveTo(a1[0], a1[1]); ctx.lineTo(a2[0], a2[1]); ctx.moveTo(b1[0], b1[1]); ctx.lineTo(b2[0], b2[1]); ctx.stroke();
+    }
+    ctx.strokeStyle = '#c3c2b7';
+    var x1p = proj(-1, 0, 0), x2p = proj(1, 0, 0), y1p = proj(0, -1, 0), y2p = proj(0, 1, 0);
+    ctx.beginPath(); ctx.moveTo(x1p[0], x1p[1]); ctx.lineTo(x2p[0], x2p[1]); ctx.moveTo(y1p[0], y1p[1]); ctx.lineTo(y2p[0], y2p[1]); ctx.stroke();
+
+    // vertical axis on the farthest floor corner, drawn behind the surface
+    var cs = [[-1, -1], [1, -1], [1, 1], [-1, 1]], far = cs[0], fd = -9, ci;
+    for (ci = 0; ci < 4; ci++) { var pc = proj(cs[ci][0], cs[ci][1], 0); if (pc[2] > fd) { fd = pc[2]; far = cs[ci]; } }
+    var v0 = proj(far[0], far[1], 0), v1 = proj(far[0], far[1], 1.0);
+    ctx.strokeStyle = '#898781'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(v0[0], v0[1]); ctx.lineTo(v1[0], v1[1]); ctx.stroke();
+    ctx.fillStyle = '#52514e'; ctx.font = '12px ' + font; ctx.textAlign = 'center';
+    ctx.fillText('loss on task A', v1[0], v1[1] - 6);
+
+    // vertex projections
+    var PT = [], PQ = [];
+    for (i = 0; i <= G; i++) {
+      PT.push([]); PQ.push([]);
+      for (j = 0; j <= G; j++) {
+        var X = -1 + 2 * i / G, Y = -1 + 2 * j / G;
+        PT[i].push(proj(X, Y, M.Ht[i][j] * zs));
+        PQ[i].push(proj(X, Y, Math.min(M.Hq[i][j], cap) * zs));
+      }
+    }
+    // cells: true surface (filled) and Fisher quadratic (wireframe), depth sorted
+    var cells = [], dstep = 2 / G;
+    for (i = 0; i < G; i++) {
+      for (j = 0; j < G; j++) {
+        var a = PT[i][j], b = PT[i + 1][j], c = PT[i + 1][j + 1], d = PT[i][j + 1];
+        var hm = (M.Ht[i][j] + M.Ht[i + 1][j] + M.Ht[i + 1][j + 1] + M.Ht[i][j + 1]) / 4;
+        var sx = (M.Ht[i + 1][j] - M.Ht[i][j]) * zs / dstep, sy2 = (M.Ht[i][j + 1] - M.Ht[i][j]) * zs / dstep;
+        var nl = Math.hypot(sx, sy2, 1), dot = (-sx * LIGHT[0] - sy2 * LIGHT[1] + LIGHT[2]) / nl;
+        var shade = 0.72 + 0.4 * Math.max(0, dot), t = Math.pow(Math.min(1, hm * zs), 0.75);
+        var col = 'rgb(' + [0, 1, 2].map(function (q) { return Math.max(0, Math.min(255, Math.round(lerp(C0[q], C1[q], t) * shade))); }).join(',') + ')';
+        cells.push({ pts: [a, b, c, d], dep: (a[2] + b[2] + c[2] + d[2]) / 4, fill: col, stroke: 'rgba(255,255,255,0.35)', lw: 0.5 });
+        var e = PQ[i][j], f = PQ[i + 1][j], gg = PQ[i + 1][j + 1], hh = PQ[i][j + 1];
+        cells.push({ pts: [e, f, gg, hh], dep: (e[2] + f[2] + gg[2] + hh[2]) / 4 - 0.002, fill: null, stroke: 'rgba(235,104,52,0.9)', lw: 0.9 });
+      }
+    }
+    cells.sort(function (u, v) { return v.dep - u.dep; });
+    cells.forEach(function (cl) { poly(cl.pts, cl.fill, cl.stroke, cl.lw); });
+
+    // minimum marker
+    var m0 = proj(0, 0, 0);
+    ctx.fillStyle = '#0b0b0b'; ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(m0[0], m0[1], 5, 0, 6.283); ctx.fill(); ctx.stroke();
+
+    // new point
+    var d1 = P.d1, d2 = P.d2, X0 = d1 / R, Y0 = d2 / R;
+    var ht = Math.max(0, M.loss(d1, d2) - M.L0), hq = 0.5 * (M.F1 * d1 * d1 + M.F2 * d2 * d2);
+    var zt = Math.min(ht * zs, 1.0), zq = Math.min(hq * zs, 0.96);
+    var fl = proj(X0, Y0, 0), pt = proj(X0, Y0, zt), pq = proj(X0, Y0, zq);
+    ctx.strokeStyle = '#898781'; ctx.lineWidth = 1; ctx.setLineDash([3, 4]);
+    ctx.beginPath(); ctx.moveTo(fl[0], fl[1]); ctx.lineTo(pt[0], pt[1]); ctx.stroke(); ctx.setLineDash([]);
+    ctx.strokeStyle = '#0b0b0b'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(pt[0], pt[1]); ctx.lineTo(pq[0], pq[1]); ctx.stroke();
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 6;
+    ctx.beginPath(); ctx.arc(pq[0], pq[1], 9, 0, 6.283); ctx.stroke();
+    ctx.strokeStyle = '#eb6834'; ctx.lineWidth = 3.5;
+    ctx.beginPath(); ctx.arc(pq[0], pq[1], 9, 0, 6.283); ctx.stroke();
+    ctx.fillStyle = '#0b0b0b'; ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(pt[0], pt[1], 5.5, 0, 6.283); ctx.fill(); ctx.stroke();
+
+    // labels with a white halo
+    ctx.font = '13px ' + font; ctx.textAlign = 'center'; ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(255,255,255,0.9)'; ctx.fillStyle = '#52514e';
+    var l1 = proj(0, 1.28, 0), l2 = proj(1.3, 0, 0);
+    ctx.strokeText('weight 2, δ₂', l1[0], l1[1]); ctx.fillText('weight 2, δ₂', l1[0], l1[1]);
+    ctx.strokeText('weight 1, δ₁', l2[0], l2[1]); ctx.fillText('weight 1, δ₁', l2[0], l2[1]);
+    ctx.textAlign = 'left'; ctx.fillStyle = '#0b0b0b'; ctx.font = '600 13px ' + font;
+    ctx.strokeText('θ*A', m0[0] + 9, m0[1] + 18); ctx.fillText('θ*A', m0[0] + 9, m0[1] + 18);
+  }
+
+  function fmt(v) { return v >= 100 ? v.toFixed(0) : v >= 10 ? v.toFixed(1) : v >= 1 ? v.toFixed(2) : v.toFixed(3); }
+  function readouts() {
+    var d1 = P.d1, d2 = P.d2;
+    var ht = Math.max(0, M.loss(d1, d2) - M.L0), hq = 0.5 * (M.F1 * d1 * d1 + M.F2 * d2 * d2);
+    document.getElementById('tv').textContent = fmt(ht);
+    document.getElementById('ev').textContent = fmt(hq);
+    var mx = Math.max(ht, hq, 1e-9);
+    document.getElementById('ba').style.width = (ht / mx * 100).toFixed(1) + '%';
+    document.getElementById('bf').style.width = (hq / mx * 100).toFixed(1) + '%';
+    document.getElementById('fvals').textContent = 'Fisher at the minimum: F₁ = ' + fmt(M.F1) + ', F₂ = ' + fmt(M.F2) + '.';
+  }
+  function setProbe(a, b) {
+    P.d1 = a; P.d2 = b;
+    document.getElementById('d1o').textContent = a.toFixed(2); document.getElementById('d2o').textContent = b.toFixed(2);
+    readouts(); draw();
+  }
+
+  function resize() {
+    var w = Math.max(280, cv.parentNode.clientWidth), h = Math.round(Math.max(300, Math.min(500, w * 0.74)));
+    var dpr = window.devicePixelRatio || 1;
+    cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); cv.style.height = h + 'px';
+    size = { w: w, h: h, dpr: dpr };
+    draw();
+  }
+
+  var drag = null;
+  cv.addEventListener('pointerdown', function (e) { drag = { x: e.clientX, y: e.clientY }; try { cv.setPointerCapture(e.pointerId); } catch (x) {} });
+  cv.addEventListener('pointermove', function (e) {
+    if (!drag) return;
+    view.yaw += (e.clientX - drag.x) * 0.01;
+    view.pitch = Math.max(0.15, Math.min(1.45, view.pitch + (e.clientY - drag.y) * 0.008));
+    drag = { x: e.clientX, y: e.clientY };
+    draw();
+  });
+  cv.addEventListener('pointerup', function () { drag = null; });
+  cv.addEventListener('pointercancel', function () { drag = null; });
+  cv.addEventListener('keydown', function (e) {
+    var k = e.key, ok = true;
+    if (k === 'ArrowLeft') view.yaw -= 0.08;
+    else if (k === 'ArrowRight') view.yaw += 0.08;
+    else if (k === 'ArrowUp') view.pitch = Math.min(1.45, view.pitch + 0.06);
+    else if (k === 'ArrowDown') view.pitch = Math.max(0.15, view.pitch - 0.06);
+    else ok = false;
+    if (ok) { e.preventDefault(); draw(); }
+  });
+  document.getElementById('d1').addEventListener('input', function (e) { setProbe(+e.target.value, P.d2); });
+  document.getElementById('d2').addEventListener('input', function (e) { setProbe(P.d1, +e.target.value); });
+  document.getElementById('rv').addEventListener('click', function () { view.yaw = DEF.yaw; view.pitch = DEF.pitch; draw(); });
+
+  if (window.ResizeObserver) new ResizeObserver(resize).observe(cv.parentNode);
+  window.addEventListener('resize', resize);
+
+  M = fit();
+  resize();
+  readouts();
+})();
+</script>
