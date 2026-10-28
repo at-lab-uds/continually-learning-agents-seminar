@@ -94,7 +94,7 @@ Initial assignments are listed below and remain preliminary. In sessions with tw
 |---:|---|---|---|---|
 | 1 | 14 Oct 2026 | Kick-off meeting: introduction and course logistics ([slides](slides/kick-off.pdf)) | — | — |
 | 2 | 21 Oct 2026 | No class | — | — |
-| 3 | 28 Oct 2026 | Catastrophic forgetting | [Overcoming catastrophic forgetting in neural networks](https://doi.org/10.1073/pnas.1611835114) | Aswathy Gopinatha Pillai |
+| 3 | 28 Oct 2026 | Catastrophic forgetting ([slides](slides/Lecture01_Overcoming%20catastrophic%20forgetting.pdf)) | [Overcoming catastrophic forgetting in neural networks](https://doi.org/10.1073/pnas.1611835114) | Marius Mosbach |
 | 4 | 04 Nov 2026 | Retention and adaptation | [To Retain or to Adapt? Generalizing Continual Learning](https://arxiv.org/abs/2607.05609) | Jaleel Ahmed Radhu Khwaja |
 | 5 | 11 Nov 2026 | Maintaining plasticity | [Loss of plasticity in deep continual learning](https://doi.org/10.1038/s41586-024-07711-7) | Nazanin Zarei Rad |
 | 6 | 18 Nov 2026 | Learning representations for adaptation | [Meta-Learning Representations for Continual Learning](https://arxiv.org/abs/1905.12588) | Liliia Maiorova |
