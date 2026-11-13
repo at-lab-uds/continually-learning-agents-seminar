@@ -96,7 +96,7 @@ Initial assignments are listed below and remain preliminary. In sessions with tw
 | 2 | 21 Oct 2026 | No class | — | — |
 | 3 | 28 Oct 2026 | Catastrophic forgetting ([slides](slides/Lecture01_Overcoming%20catastrophic%20forgetting.pdf)) | [Overcoming catastrophic forgetting in neural networks](https://doi.org/10.1073/pnas.1611835114) | Marius Mosbach |
 | 4 | 04 Nov 2026 | Retention and adaptation ([slides](slides/Lecture_2_To%20Retain%20or%20to%20Adapt_%20Generalizing%20Continual%20Learning%20-%20presentation%204_11_26.pdf)) | [To Retain or to Adapt? Generalizing Continual Learning](https://arxiv.org/abs/2607.05609) | Jaleel Ahmed Radhu Khwaja |
-| 5 | 11 Nov 2026 | Maintaining plasticity | [Loss of plasticity in deep continual learning](https://doi.org/10.1038/s41586-024-07711-7) | Nazanin Zarei Rad |
+| 5 | 11 Nov 2026 | Maintaining plasticity ([slides](slides/Loss%20of%20Plasticity%20in%20Continual%20Deep%20Learning_compressed.pdf)) | [Loss of plasticity in deep continual learning](https://doi.org/10.1038/s41586-024-07711-7) | Nazanin Zarei Rad |
 | 6 | 18 Nov 2026 | Learning representations for adaptation | [Meta-Learning Representations for Continual Learning](https://arxiv.org/abs/1905.12588) | Liliia Maiorova |
 | 7 | 25 Nov 2026 | Continual adaptation in LLMs | [Learning, Fast and Slow: Towards LLMs That Adapt Continually](https://arxiv.org/abs/2605.12484)<br>[Self-Distillation Enables Continual Learning](https://arxiv.org/abs/2601.19897) | Zhanyu Chen<br>Paulina Emily Hussein |
 | 8 | 02 Dec 2026 | Learning from self-generated supervision | [Teaching Models to Teach Themselves: Reasoning at the Edge of Learnability](https://arxiv.org/abs/2601.18778) | Shadmehr Salehi |
